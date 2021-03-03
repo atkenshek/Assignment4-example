@@ -2,8 +2,6 @@ package com.company;
 
 import controllers.Controller;
 
-import java.time.LocalDate;
-import java.util.Date;
 import java.util.Scanner;
 
 public class MyApplication {
@@ -17,75 +15,83 @@ public class MyApplication {
 
     public void appStart(){
         while (true){
-            System.out.println("Choose one option \n 1) Search for any employee by name\n 2) Search for any employee by project name\n 3) Add employee\n 4) Remove employee from DB\n 5) Get employee by ID\n 6) Show all employers..\n  0) Exit\n");
+            System.out.println("Choose one option \n 1) Search for any medicine by name\n 2) Search for any medicine by manufacturer\n 3) Add medicine\n 4) Remove medicine from DB\n 5) Get medicine by ID\n 6) Show all medicines...\n 7) Update the price of medicine\n 0) Exit\n");
             int choise = scanner.nextInt();
 
             if(choise == 1){
-                searchEmployeeByNameMenu();
+                searchMedicineByNameMenu();
             }
             else if (choise == 2){
-                searchEmployeeByProjectName();
+                searchMedicineByManufacturerMenu();
 
             }
             else if (choise == 3){
-                addProjectMenu();
+                addMedicineMenu();
             }
             else if (choise == 4){
-                removeEmployeeByIdMenu();
+                removeMedicineByIdMenu();
             }
             else if (choise == 5){
-                getEmployeeByIdMenu();
+                getMedicineByIdMenu();
 
             }
             else if (choise == 6){
-                showEmployee();
+                showMedicine();
             }
-
+            else if (choise == 7){
+                updatePriceByIdMenu();
+            }
             else {
                 break;
             }
             System.out.println("**********************************");
         }
     }
-    public void searchEmployeeByNameMenu(){
-        System.out.println("Please, write name of employee below!");
+    public void searchMedicineByNameMenu(){
+        System.out.println("Please, write name of medicine below!");
         String name = scanner.next();
-        String result = controller.searchEmployeeByName(name);
+        String result = controller.searchMedicineByName(name);
         System.out.println(result);
 
     }
-    public void showEmployee(){
-        System.out.println(controller.showEmployee());
+    public void showMedicine(){
+        System.out.println(controller.showMedicine());
     }
 
-    public void getEmployeeByIdMenu(){
-        System.out.println("Please, write ID of employee below!");
+    public void getMedicineByIdMenu(){
+        System.out.println("Please, write ID of medicine below!");
         int id = scanner.nextInt();
-        String result = controller.getEmployeeByID(id);
+        String result = controller.getMedicineByID(id);
+        System.out.println(result);
+    }
+    public void updatePriceByIdMenu(){
+        System.out.println("Please, write ID of medicine, which you want to change the price!");
+        int id = scanner.nextInt();
+        String result = controller.updatePriceByID(id);
         System.out.println(result);
     }
 
-    public void addProjectMenu(){
-        System.out.println("Write the name of employee!");
+    public void addMedicineMenu(){
+        System.out.println("Write the name of medicine!");
         String name = scanner.next();
-        System.out.println("Write employee's position!");
-        String position = scanner.next();
-        System.out.println("Write project name!");
-        String projectName = scanner.next();
-        String result = controller.addEmployee(name, position, projectName);
+        System.out.println("Write medicine's price!");
+        double price = scanner.nextDouble();
+        System.out.println("Write manufacturer!");
+        String manufacturer = scanner.next();
+        String result = controller.addMedicine(name, price, manufacturer);
         System.out.println(result);
 
     }
-    public void removeEmployeeByIdMenu(){
-        System.out.println("Write employee's id!");
+    public void removeMedicineByIdMenu(){
+        System.out.println("Write medicine's id!");
         int id = scanner.nextInt();
-        String result = controller.removeEmployeeByID(id);
+        String result = controller.removeMedicineByID(id);
         System.out.println(result);
     }
-    public void searchEmployeeByProjectName(){
-        System.out.println("Please, write name of Project name below!");
-        String projectName = scanner.next();
-        String result = controller.searchByProjectName(projectName);
+    public void searchMedicineByManufacturerMenu(){
+        System.out.println("Please, write name of manufacturer below!");
+        String manufacturer = scanner.next();
+        String result = controller.searchByManufacturer(manufacturer);
         System.out.println(result);
     }
 }
