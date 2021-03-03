@@ -1,18 +1,13 @@
 package repositories;
 
-import data.DBManager;
 import data.interfaces.IDBManager;
-import entities.Medicine;
+import entities.Company;
 import repositories.interfaces.IRepository;
-
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.time.LocalDate;
 import java.util.ArrayList;
-
-import static java.sql.Date.valueOf;
 
 public class Repository implements IRepository {
     private  IDBManager dbManager;
@@ -24,26 +19,26 @@ public class Repository implements IRepository {
         this.dbManager = dbManager;
     }
     @Override
-    public ArrayList<Medicine> searchMedicineByName(String name) {
+    public ArrayList<Company> searchEmployeeByName(String name) {
         Connection connection = null;
 
         try{
             connection = dbManager.getConnection();
 
-            PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM medicines WHERE name LIKE '%" + name + "%'");
+            PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM employees WHERE name LIKE '%" + name + "%'");
             ResultSet resultSet = preparedStatement.executeQuery();
 
-            ArrayList<Medicine> medicines = new ArrayList<>();
+            ArrayList<Company> companies = new ArrayList<>();
             while (resultSet.next()){
-                Medicine medicine = new Medicine(resultSet.getInt("id"),
+                Company company = new Company(resultSet.getInt("id"),
                         resultSet.getString("name"),
-                        resultSet.getDouble("price"),
-                        resultSet.getDate("expirationDate").toLocalDate(),
+                        resultSet.getString("position"),
+                        resultSet.getDate("dateOfDeadline").toLocalDate(),
                         resultSet.getString("manufacturer"));
 
-                medicines.add(medicine);
+                companies.add(company);
             }
-            return medicines;
+            return companies;
         }
         catch (Exception e) {
             e.printStackTrace();
@@ -53,28 +48,28 @@ public class Repository implements IRepository {
     }
 
     @Override
-    public Medicine getMedicineByID(int id) {
+    public Company getEmployeeByID(int id) {
         Connection connection = null;
 
         try {
             connection = dbManager.getConnection();
 
-            PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM medicines WHERE id=?");
+            PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM employees WHERE id=?");
 
             preparedStatement.setInt(1, id);
 
             ResultSet resultSet = preparedStatement.executeQuery();
 
-            Medicine medicine = new Medicine();
+            Company company = new Company();
 
             if (resultSet.next()){
-                medicine.setId(resultSet.getInt("id"));
-                medicine.setName(resultSet.getString("name"));
-                medicine.setPrice(resultSet.getDouble("price"));
-                medicine.setExpirationDate(resultSet.getDate("expirationDate").toLocalDate());
-                medicine.setManufacturer(resultSet.getString("manufacturer"));
+                company.setId(resultSet.getInt("id"));
+                company.setName(resultSet.getString("name"));
+                company.setPosition(resultSet.getString("position"));
+                company.setdateOfDeadline(resultSet.getDate("dateOfDeadline").toLocalDate());
+                company.setprojectName(resultSet.getString("projectName"));
             }
-            return medicine;
+            return company;
         }
         catch (Exception e){
             e.printStackTrace();
@@ -83,17 +78,17 @@ public class Repository implements IRepository {
     }
 
     @Override
-    public boolean addMedicine(Medicine medicine) {
+    public boolean addEmployee(Company company) {
         Connection connection = null;
 
         try {
             connection = dbManager.getConnection();
 
-            PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO medicines(name, price, expirationdate, manufacturer) VALUES ( ?, ?, ?, ?)");
-            preparedStatement.setString(1, medicine.getName());
-            preparedStatement.setDouble(2, medicine.getPrice());
-            preparedStatement.setDate(3, valueOf(medicine.getExpirationDate()));
-            preparedStatement.setString(4, medicine.getManufacturer());
+            PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO employees(name, position, dateofdeadline, projectname) VALUES ( ?, ?, ?, ?)");
+            preparedStatement.setString(1, company.getName());
+            preparedStatement.setString(2, company.getPosition());
+            preparedStatement.setDate(3,  Date.valueOf(company.getdateOfDeadline()));
+            preparedStatement.setString(4, company.getprojectName());
             preparedStatement.execute();
             return true;
         }
@@ -105,11 +100,11 @@ public class Repository implements IRepository {
     }
 
     @Override
-    public boolean removeMedicine(int id) {
+    public boolean removeEmployee(int id) {
         Connection connection = null;
         try {
             connection = dbManager.getConnection();
-            PreparedStatement preparedStatement = connection.prepareStatement("DELETE from medicines WHERE id=?");
+            PreparedStatement preparedStatement = connection.prepareStatement("DELETE from employees WHERE id=?");
 
             preparedStatement.setInt(1, id);
             preparedStatement.execute();
@@ -122,55 +117,26 @@ public class Repository implements IRepository {
         return false;
     }
     @Override
-    public ArrayList<Medicine> showMedicine() {
+    public ArrayList<Company> showEmployee() {
         Connection connection = null;
 
         try{
             connection = dbManager.getConnection();
 
-            PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM medicines");
+            PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM employees");
             ResultSet resultSet = preparedStatement.executeQuery();
 
-            ArrayList<Medicine> medicines = new ArrayList<>();
+            ArrayList<Company> companies = new ArrayList<>();
             while (resultSet.next()){
-                Medicine medicine = new Medicine(resultSet.getInt("id"),
+                Company company = new Company(resultSet.getInt("id"),
                         resultSet.getString("name"),
-                        resultSet.getDouble("price"),
-                        resultSet.getDate("expirationDate").toLocalDate(),
-                        resultSet.getString("manufacturer"));
+                        resultSet.getString("position"),
+                        resultSet.getDate("dateOfDeadline").toLocalDate(),
+                        resultSet.getString("projectName"));
 
-                medicines.add(medicine);
+                companies.add(company);
             }
-            return medicines;
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return null;
-    }
-
-    @Override
-    public ArrayList<Medicine> searchMedicineByManufacturer(String manufacturer) {
-        Connection connection = null;
-
-        try{
-            connection = dbManager.getConnection();
-
-            PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM medicines WHERE manufacturer=?");
-            ResultSet resultSet = preparedStatement.executeQuery();
-
-            ArrayList<Medicine> medicines = new ArrayList<>();
-            while (resultSet.next()){
-                Medicine medicine = new Medicine(resultSet.getInt("id"),
-                        resultSet.getString("name"),
-                        resultSet.getDouble("price"),
-                        resultSet.getDate("expirationDate").toLocalDate(),
-                        resultSet.getString("manufacturer"));
-
-                medicines.add(medicine);
-            }
-            return medicines;
+            return companies;
         }
         catch (Exception e) {
             e.printStackTrace();
@@ -180,36 +146,37 @@ public class Repository implements IRepository {
     }
 
 
-
     @Override
-    public Medicine updatePriceByID(int id) {
+    public ArrayList<Company> searchEmployeeByProjectName(String projectName) {
         Connection connection = null;
 
-        try {
+        try{
             connection = dbManager.getConnection();
 
-            PreparedStatement preparedStatement = connection.prepareStatement("UPDATE medicines SET price=499.99 WHERE id=?");
-
-            preparedStatement.setInt(1, id);
-
+            PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM employees WHERE projectname=?");
             ResultSet resultSet = preparedStatement.executeQuery();
 
-            Medicine medicine = new Medicine();
+            ArrayList<Company> companies = new ArrayList<>();
+            while (resultSet.next()){
+                Company company = new Company(resultSet.getInt("id"),
+                        resultSet.getString("name"),
+                        resultSet.getString("position"),
+                        resultSet.getDate("dateOfDeadline").toLocalDate(),
+                        resultSet.getString("projectName"));
 
-            if (resultSet.next()){
-                medicine.setId(resultSet.getInt("id"));
-                medicine.setName(resultSet.getString("name"));
-                medicine.setPrice(resultSet.getDouble("price"));
-                medicine.setExpirationDate(resultSet.getDate("expirationDate").toLocalDate());
-                medicine.setManufacturer(resultSet.getString("manufacturer"));
+                companies.add(company);
             }
-            return medicine;
+            return companies;
         }
-        catch (Exception e){
+        catch (Exception e) {
             e.printStackTrace();
         }
+
         return null;
     }
+
+
+
 
 
 }
