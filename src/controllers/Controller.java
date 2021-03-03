@@ -1,11 +1,11 @@
 package controllers;
 
-import entities.Medicine;
-import repositories.Repository;
+import entities.Company;
 import repositories.interfaces.IRepository;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
+
+import static java.time.LocalDate.parse;
 
 public class Controller {
     private final IRepository repository;
@@ -14,43 +14,40 @@ public class Controller {
         this.repository = repository;
     }
 
-    public String searchMedicineByName(String name){
-        String result = repository.searchMedicineByName(name).toString();
+    public String searchEmployeeByName(String name){
+        String result = repository.searchEmployeeByName(name).toString();
         return result;
     }
 
 
-    public String getMedicineByID(int id){
-        String result = repository.getMedicineByID(id).toString();
-        return result;
-    }
-    public String updatePriceByID(int id){
-        String result = repository.updatePriceByID(id).toString();
+    public String getEmployeeByID(int id){
+        String result = repository.getEmployeeByID(id).toString();
         return result;
     }
 
-    public String addMedicine(String name, double price, String manufacturer){
-        LocalDate expirationDate = LocalDate.now();
-        boolean added = repository.addMedicine(new Medicine(name, price, expirationDate, manufacturer));
+
+    public String addEmployee(String name, String position, String projectName){
+        LocalDate deadline = LocalDate.now();
+        boolean added = repository.addEmployee(new Company(name, position, deadline, projectName));
         if(added){
-            return "Medicine was added successfully! ";
+            return "Employee was added successfully! ";
         }
-        return "Medicine was not added, please try again! ";
+        return "Employee was not added, please try again! ";
     }
 
-    public String removeMedicineByID(int id){
-        boolean removed = repository.removeMedicine(id);
+    public String removeEmployeeByID(int id){
+        boolean removed = repository.removeEmployee(id);
         if(removed){
-            return "Medicine was removed successfully! ";
+            return "Employee was removed successfully! ";
         }
-        return "Medicine was not removed, please try again! ";
+        return "Employee was not removed, please try again! ";
     }
-    public String showMedicine(){
-        String result = repository.showMedicine().toString();
+    public String showEmployee(){
+        String result = repository.showEmployee().toString();
         return result;
     }
-    public String searchByManufacturer(String manufacturer){
-        String result = repository.searchMedicineByManufacturer(manufacturer).toString();
+    public String searchByProjectName(String projectName){
+        String result = repository.searchEmployeeByProjectName(projectName).toString();
         return result;
     }
 
